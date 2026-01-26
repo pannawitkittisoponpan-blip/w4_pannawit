@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "953103112298",
+    "project_id": "w4-pannawit",
+    "storage_bucket": "w4-pannawit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:953103112298:android:8c901d6cfb9edbd376d213",
+        "android_client_info": {
+          "package_name": "com.example.w4_pannawit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhsKVD4-F78YQ4wOeH9LMb-B_Vugv0i8M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
