@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -42,6 +44,12 @@ class _MyHomePageState extends State<MyHomePage> {
   final _dessertNameCtrl = TextEditingController();
   final _dessertTypeCtrl = TextEditingController();
   final _dessertPriceCtrl = TextEditingController();
+
+  void addDessert(){
+    String _name = _dessertNameCtrl.text;
+    String _type = _dessertTypeCtrl.text;
+    String _price = _dessertPriceCtrl.text;
+  }
 
   @override
   Widget build(BuildContext context) {
