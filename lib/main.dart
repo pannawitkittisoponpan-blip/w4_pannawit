@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,14 +42,33 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  final _dessertNameCtrl = TextEditingController();
-  final _dessertTypeCtrl = TextEditingController();
-  final _dessertPriceCtrl = TextEditingController();
+  final _snackNameCtrl = TextEditingController();
+  final _snackTypeCtrl = TextEditingController();
+  final _snackPriceCtrl = TextEditingController();
 
-  void addDessert(){
-    String _name = _dessertNameCtrl.text;
-    String _type = _dessertTypeCtrl.text;
-    String _price = _dessertPriceCtrl.text;
+  void addSnack() async{
+    String _name = _snackNameCtrl.text;
+    String _type = _snackTypeCtrl.text;
+    String _price = _snackPriceCtrl.text;
+
+    print("test999 : $_name | $_type | $_price");
+
+    try{
+
+      await FirebaseFirestore.instance.collection("snacks").add({
+        "snackName" : _name,
+        "snackType" : _type,
+        "snackPrice" : _price
+      });
+
+      _snackNameCtrl.clear();
+      _snackTypeCtrl.clear();
+      _snackPriceCtrl.clear();
+
+    }catch(e){
+      print("error : $e");
+    }
+
   }
 
   @override
@@ -61,16 +81,44 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(children: [
           TextField(decoration: InputDecoration(labelText: "ชื่อขนม : "),
-          controller: _dessertNameCtrl,
+          controller: _snackNameCtrl,
           ),
           TextField(decoration: InputDecoration(labelText: "ประเภทขนม : "),
-            controller: _dessertTypeCtrl,
+            controller: _snackTypeCtrl,
           ),
           TextField(decoration: InputDecoration(labelText: "ราคา : "),
-            controller: _dessertPriceCtrl,
+            controller: _snackPriceCtrl,
           ),
-          ElevatedButton(onPressed: () => {}, child: Text("บันทึก"))
-        ])),
+          ElevatedButton(onPressed: () => addSnack(), child: Text("บันทึก")),
+        
+          Expanded(
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("snacks")
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if(snapshot.connectionState == ConnectionState.waiting){
+                      return Center(child: CircularProgressIndicator(),);
+                    }
+
+                    if(snapshot.hasError){
+                      return Center(child: Text(snapshot.error.toString()),);
+                    }
+
+                    final snacks = snapshot.data!;
+
+                    return GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                    ),
+                        itemBuilder: itemBuilder,
+                    );
+
+                  },
+              ),
+          ),
+        ],
+        ),
+      ),
 
     );
   }
