@@ -105,14 +105,30 @@ class _MyHomePageState extends State<MyHomePage> {
                       return Center(child: Text(snapshot.error.toString()),);
                     }
 
-                    final snacks = snapshot.data!;
+                    final doc = snapshot.data!.docs;
 
-                    return GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10
                     ),
-                        itemBuilder: itemBuilder,
-                    );
+                        itemCount: doc.length,
+                        itemBuilder: (context, index){
+                        final snacks = doc[index];
+                        final s = snacks.data();
 
+                        return InkWell(
+                          onTap: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => SnackDetailPage(snack: s) ));
+
+                          },
+                          child: Card(child: Text(s["snackName"]),));
+                        },
+                    );
                   },
               ),
           ),
@@ -121,5 +137,25 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
     );
+  }
+}
+
+class SnackDetailPage extends StatelessWidget {
+  final snack;
+
+  const SnackDetailPage({super.key, required this.snack});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("รายละเอียดขนม"),),
+      body: Center(
+      child: Column(
+      children: [
+        Text(snack['snackName']),
+        Text(snack['snackType']),
+        Text(snack['snackPrice']),
+      ],
+      ),));
   }
 }
