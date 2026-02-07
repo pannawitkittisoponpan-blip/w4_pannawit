@@ -180,7 +180,6 @@ class SnackDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // พื้นหลังสีเขียวอ่อนๆ ให้ดูสบายตา
       backgroundColor: Colors.green[50],
       appBar: AppBar(
         title: const Text("รายละเอียดขนม"),
@@ -191,7 +190,6 @@ class SnackDetailPage extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            // ส่วนแสดงไอคอนวงกลม
             const Center(
               child: CircleAvatar(
                 radius: 50,
@@ -201,7 +199,6 @@ class SnackDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 30),
 
-            // Card แสดงข้อมูล (ใช้ ListTile สำเร็จรูปมาช่วย)
             Card(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
               elevation: 4,
@@ -212,13 +209,11 @@ class SnackDetailPage extends StatelessWidget {
                     title: const Text("ชื่อขนม"),
                     subtitle: Text(snack['snackName'], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   ),
-                  const Divider(),
                   ListTile(
                     leading: const Icon(Icons.category, color: Colors.greenAccent),
                     title: const Text("ประเภท"),
                     subtitle: Text(snack['snackType']),
                   ),
-                  const Divider(),
                   ListTile(
                     leading: const Icon(Icons.monetization_on, color: Colors.greenAccent),
                     title: const Text("ราคา"),
