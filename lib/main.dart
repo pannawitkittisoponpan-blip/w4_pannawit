@@ -24,9 +24,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'โปรแกรมเพิ่มรายการขนม'),
     );
   }
 }
@@ -89,8 +89,15 @@ class _MyHomePageState extends State<MyHomePage> {
           TextField(decoration: InputDecoration(labelText: "ราคา : "),
             controller: _snackPriceCtrl,
           ),
-          ElevatedButton(onPressed: () => addSnack(), child: Text("บันทึก")),
-        
+          SizedBox(height: 10,),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 170, vertical: 10),
+            ),
+            onPressed: () => addSnack(),
+            child: const Text("บันทึก"),
+          ),
+          SizedBox(height: 10,),
           Expanded(
               child: StreamBuilder(
                   stream: FirebaseFirestore.instance
@@ -108,26 +115,51 @@ class _MyHomePageState extends State<MyHomePage> {
                     final doc = snapshot.data!.docs;
 
                     return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      padding: const EdgeInsets.all(10), // เพิ่มพื้นที่รอบขอบจอ
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10
-                    ),
-                        itemCount: doc.length,
-                        itemBuilder: (context, index){
-                        final snacks = doc[index];
-                        final s = snacks.data();
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 0.9, // ปรับสัดส่วนแนวตั้ง-แนวนอนของ Card
+                      ),
+                      itemCount: doc.length,
+                      itemBuilder: (context, index) {
+                        final s = doc[index].data();
 
                         return InkWell(
-                          onTap: (){
+                          onTap: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => SnackDetailPage(snack: s) ));
-
+                              context,
+                              MaterialPageRoute(builder: (_) => SnackDetailPage(snack: s)),
+                            );
                           },
-                          child: Card(child: Text(s["snackName"]),));
-                        },
+                          child: Card(
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircleAvatar(
+                                  radius: 30,
+                                  backgroundColor: Colors.greenAccent[100],
+                                  child: Icon(Icons.cake, color: Colors.green[800], size: 35),
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  s["snackName"],
+                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  "${s["snackPrice"]} บาท",
+                                  style: TextStyle(color: Colors.green[700], fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
               ),
@@ -148,14 +180,56 @@ class SnackDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("รายละเอียดขนม"),),
-      body: Center(
-      child: Column(
-      children: [
-        Text(snack['snackName']),
-        Text(snack['snackType']),
-        Text(snack['snackPrice']),
-      ],
-      ),));
+      // พื้นหลังสีเขียวอ่อนๆ ให้ดูสบายตา
+      backgroundColor: Colors.green[50],
+      appBar: AppBar(
+        title: const Text("รายละเอียดขนม"),
+        backgroundColor: Colors.greenAccent,
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            // ส่วนแสดงไอคอนวงกลม
+            const Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundColor: Colors.greenAccent,
+                child: Icon(Icons.cake, size: 60, color: Colors.white),
+              ),
+            ),
+            const SizedBox(height: 30),
+
+            // Card แสดงข้อมูล (ใช้ ListTile สำเร็จรูปมาช่วย)
+            Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              elevation: 4,
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.fastfood, color: Colors.greenAccent),
+                    title: const Text("ชื่อขนม"),
+                    subtitle: Text(snack['snackName'], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.category, color: Colors.greenAccent),
+                    title: const Text("ประเภท"),
+                    subtitle: Text(snack['snackType']),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.monetization_on, color: Colors.greenAccent),
+                    title: const Text("ราคา"),
+                    subtitle: Text("${snack['snackPrice']} บาท"),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
